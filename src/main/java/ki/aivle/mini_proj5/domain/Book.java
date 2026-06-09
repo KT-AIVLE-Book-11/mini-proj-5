@@ -44,7 +44,7 @@ public class Book {
 
     @Column(nullable = false)
     @JsonProperty("public")     // 예약어
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @Column(columnDefinition = "LONGTEXT")
     private String coverImageUrl;

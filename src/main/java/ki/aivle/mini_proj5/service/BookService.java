@@ -52,7 +52,9 @@ public class BookService {
             existing.setGenre(bookDetails.getGenre());
         }
 
-        existing.setPublic(bookDetails.isPublic());
+        if (bookDetails.getIsPublic() != null) {
+            existing.setIsPublic(bookDetails.getIsPublic());
+        }
         return bookRepository.save(existing);
     }
 
