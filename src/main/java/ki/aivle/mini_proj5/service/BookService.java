@@ -1,7 +1,9 @@
-/*package ki.aivle.mini_proj5.service;
+package ki.aivle.mini_proj5.service;
 
 
 import ki.aivle.mini_proj5.domain.Book;
+import ki.aivle.mini_proj5.exception.BookNotFoundException;
+import ki.aivle.mini_proj5.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +52,9 @@ public class BookService {
             existing.setGenre(bookDetails.getGenre());
         }
 
-        existing.setPublic(bookDetails.isPublic());
+        if (bookDetails.getIsPublic() != null) {
+            existing.setIsPublic(bookDetails.getIsPublic());
+        }
         return bookRepository.save(existing);
     }
 
@@ -87,4 +91,4 @@ public class BookService {
         book.setLikes(book.getLikes() + 1);
     }
 
-}*/
+}
