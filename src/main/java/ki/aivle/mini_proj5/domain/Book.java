@@ -37,10 +37,10 @@ public class Book {
     private String genre;
 
     @Column
-    private int likes;
+    private Integer likes;
 
     @Column
-    private int views;
+    private Integer views;
 
     @Column(nullable = false)
     @JsonProperty("public")     // 예약어
