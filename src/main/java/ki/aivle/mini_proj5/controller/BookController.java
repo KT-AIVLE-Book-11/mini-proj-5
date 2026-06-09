@@ -5,6 +5,7 @@ import ki.aivle.mini_proj5.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class BookController {
 
     // 3. 도서 등록
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {
         Book createdBook = bookService.create(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
     }
