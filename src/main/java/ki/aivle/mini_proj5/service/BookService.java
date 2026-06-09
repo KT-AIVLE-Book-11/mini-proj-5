@@ -1,4 +1,4 @@
-package ki.aivle.mini_proj5.service;
+/*package ki.aivle.mini_proj5.service;
 
 
 import ki.aivle.mini_proj5.domain.Book;
@@ -87,4 +87,4 @@ public class BookService {
         book.setLikes(book.getLikes() + 1);
     }
 
-}
+}*/
