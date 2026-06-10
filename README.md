@@ -318,14 +318,14 @@ Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인�
 
 | 메서드 | 엔드포인트 | 기능 | 설명 |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/api/v1/books` | 전체 도서 목록 조회 | DB에 등록된 모든 도서 데이터 조회 |
-| `GET` | `/api/v1/books/{id}` | 도서 상세 조회 | 특정 ID의 도서 세부 정보 조회 |
-| `POST` | `/api/v1/books` | 신규 도서 등록 | 새 도서 등록 (생성일/수정일/조회수 등 자동 초기화) |
-| `PATCH` | `/api/v1/books/{id}` | 도서 정보 수정 | 도서의 제목, 내용, 작가 등 세부 정보 업데이트 |
-| `PATCH` | `/api/v1/books/{id}/cover` | AI 표지 업데이트 | OpenAI로 생성된 도서 표지 이미지 URL 저장 |
-| `PATCH` | `/api/v1/books/{id}/views` | 조회수 증가 | 도서 상세 페이지 진입 시 조회수 1 증가 |
-| `PATCH` | `/api/v1/books/{id}/likes` | 좋아요 증가 | 좋아요 버튼 클릭 시 좋아요 수 1 증가 |
-| `DELETE`| `/api/v1/books/{id}` | 도서 삭제 | 특정 ID의 도서 데이터를 DB에서 삭제 |
+| `GET` | `/books` | 전체 도서 목록 조회 | DB에 등록된 모든 도서 데이터 조회 |
+| `GET` | `/books/{id}` | 도서 상세 조회 | 특정 ID의 도서 세부 정보 조회 |
+| `POST` | `/books` | 신규 도서 등록 | 새 도서 등록 (생성일/수정일/조회수 등 자동 초기화) |
+| `PATCH` | `/books/{id}` | 도서 정보 수정 | 도서의 제목, 내용, 작가 등 세부 정보 업데이트 |
+| `PATCH` | `/books/{id}/cover` | AI 표지 업데이트 | OpenAI로 생성된 도서 표지 이미지 URL 저장 |
+| `PATCH` | `/books/{id}/views` | 조회수 증가 | 도서 상세 페이지 진입 시 조회수 1 증가 |
+| `PATCH` | `/books/{id}/likes` | 좋아요 증가 | 좋아요 버튼 클릭 시 좋아요 수 1 증가 |
+| `DELETE`| `/books/{id}` | 도서 삭제 | 특정 ID의 도서 데이터를 DB에서 삭제 |
 
 ---
 
