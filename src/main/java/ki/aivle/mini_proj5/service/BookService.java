@@ -61,7 +61,7 @@ public class BookService {
 
     // 도서 수정 - 표지
     @Transactional
-    public Book updateCover(Long id, String coverImageUrl, String prompt) {
+    public Book updateCover(Long id, String coverImageUrl) {
         Book existing = getById(id);
 
         existing.setCoverImageUrl(coverImageUrl);
@@ -78,14 +78,14 @@ public class BookService {
         }
     }
 
-    // 주회수 증가
+    // 주회수 증가 (프론트 엔드 처리)
     @Transactional
     public void incrementViews(Long id, int views) {
         Book book = getById(id);
         book.setViews(views);
     }
 
-    // 좋아요 증가
+    // 좋아요 증가 (프론트 엔드 처리)
     @Transactional
     public void incrementLikes(Long id, int likes) {
         Book book = getById(id);
