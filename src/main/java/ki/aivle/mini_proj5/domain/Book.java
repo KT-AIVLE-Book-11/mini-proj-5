@@ -3,6 +3,7 @@ package ki.aivle.mini_proj5.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,14 +38,15 @@ public class Book {
     private String genre;
 
     @Column
-    private int likes;
+    private Integer likes = 0;
 
     @Column
-    private int views;
+    private Integer views = 0;
 
     @Column(nullable = false)
+    @NotNull
     @JsonProperty("public")     // 예약어
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @Column(columnDefinition = "LONGTEXT")
     private String coverImageUrl;

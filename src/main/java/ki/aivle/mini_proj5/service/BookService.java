@@ -91,11 +91,9 @@ public class BookService {
         Book book = getById(id);
         book.setLikes(book.getLikes() + 1);
     }
-
-}
-
-// 프론트 엔드 처리
+  
     /*
+    // 프론트 엔드 처리
     // 조회수 증가
     @Transactional
     public void incrementViews(Long id, int views) {
@@ -109,10 +107,7 @@ public class BookService {
         Book book = getById(id);
         book.setLikes(likes);
     }
-     */
-
-// 백엔드 처리
-    /*
+    // 백엔드 처리
     // 조회수 증가
     @Transactional
     public int incrementViews(Long id) {
@@ -129,3 +124,5 @@ public class BookService {
         return book.getLikes();
     }
     */
+
+}
