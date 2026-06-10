@@ -371,7 +371,7 @@ AI로 생성한 표지 이미지의 저장하기 버튼 클릭 시 "표지가 �
 
     * 표지 이미지 수정 엔드포인트로 요청 URL 변경
 
-    ```java
+    ```js
     // 수정 전
     const res = await fetch(`${API_URL}/${book.id}`, {
     method: 'PATCH',
@@ -382,7 +382,7 @@ AI로 생성한 표지 이미지의 저장하기 버튼 클릭 시 "표지가 �
     }),
     })
     ```
-    ```java
+    ```js
     // 수정 후
     const res = await fetch(`${API_URL}/${book.id}/cover`, {
     method: 'PATCH',
