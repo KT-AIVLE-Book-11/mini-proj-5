@@ -62,6 +62,8 @@ public class Book {
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        if(this.likes==null) this.likes = 0;
+        if(this.views==null) this.views = 0;
     }
 
     // 수정 반영(UPDATE) 전 자동 호출 -> 수정일 갱신
