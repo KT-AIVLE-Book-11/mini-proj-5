@@ -1,7 +1,9 @@
-/*package ki.aivle.mini_proj5.service;
+package ki.aivle.mini_proj5.service;
 
 
 import ki.aivle.mini_proj5.domain.Book;
+import ki.aivle.mini_proj5.exception.BookNotFoundException;
+import ki.aivle.mini_proj5.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ public class BookService {
     }
 
     // 도서 상세 조회
+    @Transactional(readOnly = true)
     public Book getById(Long id) {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
@@ -50,7 +53,9 @@ public class BookService {
             existing.setGenre(bookDetails.getGenre());
         }
 
-        existing.setPublic(bookDetails.isPublic());
+        if (bookDetails.getIsPublic() != null) {
+            existing.setIsPublic(bookDetails.getIsPublic());
+        }
         return bookRepository.save(existing);
     }
 
@@ -75,16 +80,16 @@ public class BookService {
 
     // 주회수 증가
     @Transactional
-    public void incrementViews(Long id) {
+    public void incrementViews(Long id, int views) {
         Book book = getById(id);
-        book.setViews(book.getViews() + 1);
+        book.setViews(views);
     }
 
     // 좋아요 증가
     @Transactional
-    public void incrementLikes(Long id) {
+    public void incrementLikes(Long id, int likes) {
         Book book = getById(id);
-        book.setLikes(book.getLikes() + 1);
+        book.setLikes(likes);
     }
 
-}*/
+}
