@@ -22,6 +22,7 @@ public class BookService {
     }
 
     // 도서 상세 조회
+    @Transactional(readOnly = true)
     public Book getById(Long id) {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
@@ -58,9 +59,9 @@ public class BookService {
         return bookRepository.save(existing);
     }
 
-    // 도서 수정 - 표지
+    // 도서 수정 - 표지 (프롬프트 사용안하는 변수라 삭제)
     @Transactional
-    public Book updateCover(Long id, String coverImageUrl, String prompt) {
+    public Book updateCover(Long id, String coverImageUrl) {
         Book existing = getById(id);
 
         existing.setCoverImageUrl(coverImageUrl);
@@ -77,7 +78,7 @@ public class BookService {
         }
     }
 
-    // 주회수 증가
+    // 조회수 증가
     @Transactional
     public void incrementViews(Long id) {
         Book book = getById(id);
@@ -90,5 +91,38 @@ public class BookService {
         Book book = getById(id);
         book.setLikes(book.getLikes() + 1);
     }
+  
+    /*
+    // 프론트 엔드 처리
+    // 조회수 증가
+    @Transactional
+    public void incrementViews(Long id, int views) {
+        Book book = getById(id);
+        book.setViews(views);
+    }
+
+    // 좋아요 증가
+    @Transactional
+    public void incrementLikes(Long id, int likes) {
+        Book book = getById(id);
+        book.setLikes(likes);
+    }
+    // 백엔드 처리
+    // 조회수 증가
+    @Transactional
+    public int incrementViews(Long id) {
+        Book book = getById(id);
+        book.setViews(book.getViews() + 1);
+        return book.getViews();
+    }
+
+    // 좋아요 증가
+    @Transactional
+    public int incrementLikes(Long id) {
+        Book book = getById(id);
+        book.setLikes(book.getLikes() + 1);
+        return book.getLikes();
+    }
+    */
 
 }
