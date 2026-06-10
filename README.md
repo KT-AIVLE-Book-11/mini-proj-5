@@ -350,7 +350,7 @@ Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인�
 | **Backend** | Spring Boot 3, Spring MVC (REST API), Spring Data JPA, Lombok |
 | **Database** | H2 Database |
 | **AI** | OpenAI API (GPT Image 모델) |
-| **협업/관리** | GitHub |
+| **협업/관리** | GitHub, Notion |
 
 ---
 
