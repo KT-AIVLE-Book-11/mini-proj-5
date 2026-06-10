@@ -65,15 +65,15 @@ public class BookController {
 
     // 7. 조회수 증가
     @PatchMapping("/{id}/views")
-    public ResponseEntity<Void> incrementViews(@PathVariable Long id) {
-        bookService.incrementViews(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Integer> incrementViews(@PathVariable Long id) {
+        int updatedViews = bookService.incrementViews(id);
+        return ResponseEntity.ok(updatedViews);
     }
 
     // 8. 좋아요 증가
     @PatchMapping("/{id}/likes")
-    public ResponseEntity<Void> incrementLikes(@PathVariable Long id) {
-        bookService.incrementLikes(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Integer> incrementLikes(@PathVariable Long id) {
+        int updatedLikes = bookService.incrementLikes(id);
+        return ResponseEntity.ok(updatedLikes);
     }
 }
