@@ -92,7 +92,9 @@ public class BookService {
         book.setLikes(book.getLikes() + 1);
     }
 
-    // 프론트 엔드 처리
+}
+
+// 프론트 엔드 처리
     /*
     // 조회수 증가
     @Transactional
@@ -109,7 +111,7 @@ public class BookService {
     }
      */
 
-    // 백엔드 처리
+// 백엔드 처리
     /*
     // 조회수 증가
     @Transactional
@@ -127,5 +129,3 @@ public class BookService {
         return book.getLikes();
     }
     */
-
-}
