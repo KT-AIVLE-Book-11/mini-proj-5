@@ -92,4 +92,23 @@ public class BookService {
         book.setLikes(likes);
     }
 
+    /*
+    // 백엔드에서 처리
+    // 조회수 증가
+    @Transactional
+    public int incrementViews(Long id) {
+        Book book = getById(id);
+        book.setViews(book.getViews() + 1);
+        return book.getViews();
+    }
+
+    // 좋아요 증가
+    @Transactional
+    public int incrementLikes(Long id) {
+        Book book = getById(id);
+        book.setLikes(book.getLikes() + 1);
+        return book.getLikes();
+    }
+    */
+
 }
