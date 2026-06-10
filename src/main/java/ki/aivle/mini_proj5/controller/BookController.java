@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/books")
+@RequestMapping("/books")
 @RequiredArgsConstructor
 public class BookController {
 
@@ -52,7 +52,7 @@ public class BookController {
         String coverImageUrl = request.get("coverImageUrl");
         String prompt = request.get("prompt");
 
-        Book updatedBook = bookService.updateCover(id, coverImageUrl, prompt);
+        Book updatedBook = bookService.updateCover(id, coverImageUrl);
         return ResponseEntity.ok(updatedBook);
     }
 
