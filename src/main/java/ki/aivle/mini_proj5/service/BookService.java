@@ -15,10 +15,13 @@ import java.util.List;
 public class BookService {
     private final BookRepository bookRepository;
 
-    // 전체 도서 목록 조회
+    // 전체 도서 목록 조회 + 장르 필터링
     @Transactional(readOnly = true)
-    public List<Book> getAll() {
-        return bookRepository.findAll();
+    public List<Book> getAll(String genre) {
+        if (genre == null || genre.trim().isEmpty() || genre.equals("전체")) {
+            return bookRepository.findAll();
+        }
+        return bookRepository.findByGenre(genre);
     }
 
     // 도서 상세 조회
