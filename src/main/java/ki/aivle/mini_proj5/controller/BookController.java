@@ -18,6 +18,7 @@ public class BookController {
 
     private final BookService bookService;
 
+
     // 1. 전체 도서 목록 조회 + 검색/장르 필터링
     @GetMapping
     public ResponseEntity<List<Book>> getBooks(
@@ -26,6 +27,7 @@ public class BookController {
             @RequestParam(required = false) String genre
     ) {
         List<Book> books = bookService.searchBooks(searchType, keyword, genre);
+
         return ResponseEntity.ok(books);
     }
 
