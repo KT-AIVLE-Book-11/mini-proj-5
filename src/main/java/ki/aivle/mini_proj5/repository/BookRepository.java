@@ -8,6 +8,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByTitleContaining(String keyword);
     List<Book> findByAuthorContaining(String keyword);
     List<Book> findByGenre(String genre);
-    List<Book> findByAuthorContainingAndGenre(String keyword, String genre);
-    List<Book> findByTitleContainingAndGenre(String keyword, String genre);
+    List<Book> findByTitle(String title);
+    List<Book> findByAuthor(String author);
+    List<Book> findByTitleAndAuthor(String title, String author);
+
+    List<Book> findByTitleContainingIgnoreCase(String keyword);
+    List<Book> findByAuthorContainingIgnoreCase(String keyword);
+    List<Book> findByTitleContainingIgnoreCaseAndGenre(String keyword, String genre);
+    List<Book> findByAuthorContainingIgnoreCaseAndGenre(String keyword, String genre);
+
 }

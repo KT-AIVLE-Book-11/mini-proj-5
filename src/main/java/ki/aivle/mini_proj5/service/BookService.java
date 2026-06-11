@@ -15,13 +15,28 @@ import java.util.List;
 public class BookService {
     private final BookRepository bookRepository;
 
-    // 전체 도서 목록 조회 + 장르 필터링
+    // 전체 도서 목록 조회 + 검색 + 장르 필터링
     @Transactional(readOnly = true)
-    public List<Book> getAll(String genre) {
-        if (genre == null || genre.trim().isEmpty() || genre.equals("전체")) {
-            return bookRepository.findAll();
+    public List<Book> searchBooks(String searchType, String keyword, String genre) {
+        boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
+        boolean hasGenre = genre != null && !genre.trim().isEmpty() && !genre.equals("전체");
+
+        if (hasKeyword && hasGenre) {
+            if ("author".equals(searchType)) {
+                return bookRepository.findByAuthorContainingIgnoreCaseAndGenre(keyword, genre);
+            }
+            return bookRepository.findByTitleContainingIgnoreCaseAndGenre(keyword, genre);
         }
-        return bookRepository.findByGenre(genre);
+        if (hasKeyword) {
+            if ("author".equals(searchType)) {
+                return bookRepository.findByAuthorContainingIgnoreCase(keyword);
+            }
+            return bookRepository.findByTitleContainingIgnoreCase(keyword);
+        }
+        if (hasGenre) {
+            return bookRepository.findByGenre(genre);
+        }
+        return bookRepository.findAll();
     }
 
     // 도서 상세 조회
@@ -96,31 +111,4 @@ public class BookService {
         book.setLikes(book.getLikes() + 1);
         return book.getLikes();
     }
-    @Transactional(readOnly = true)
-    public List<Book> searchBooks(String searchType, String keyword, String genre) {
-        boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
-        boolean hasGenre = genre != null && !genre.trim().isEmpty();
-
-        if (!hasKeyword && !hasGenre) {
-            return bookRepository.findAll();
-        }
-
-        if (hasKeyword && hasGenre) {
-            if ("author".equals(searchType)) {
-                return bookRepository.findByAuthorContainingAndGenre(keyword, genre);
-            }
-            return bookRepository.findByTitleContainingAndGenre(keyword, genre);
-        }
-
-        if (hasKeyword) {
-            if ("author".equals(searchType)) {
-                return bookRepository.findByAuthorContaining(keyword);
-            }
-            return bookRepository.findByTitleContaining(keyword);
-        }
-
-        return bookRepository.findByGenre(genre);
-    }
-
-
 }
