@@ -192,14 +192,13 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
   * `Book` Entity: `@NotBlank` 어노테이션 추가하여 필수 입력값(제목, 작가, 내용, 장르) 검증 로직 적용
   * `BookRepository`: JpaRepository를 활용한 기본 CRUD 동작 검증 및 H2 콘솔을 통한 데이터 적재 확인
 
-
- <img alt="Image" src="https://github.com/user-attachments/assets/f949690b-c0c4-4279-b498-4f4789700a32" />
+     <img alt="Image" src="https://github.com/user-attachments/assets/f949690b-c0c4-4279-b498-4f4789700a32" />
  
   * `Comment` Entity:
     * `@NotBlank`·`@Size`· `@Min(1)`·`@Max(5)`로 입력 및 별점 범위 검증 로직 적용
     * `@ManyToOne` + `@JoinColumn(name = "book_id")`로 `Book`과 단방향 연관관계 매핑 (도서 1 : 댓글 N)
    
-  <img alt="Image" alt="image" src="https://github.com/user-attachments/assets/4431cd51-33a9-4897-8a11-fabf3df8c485" />
+      <img alt="Image" alt="image" src="https://github.com/user-attachments/assets/4431cd51-33a9-4897-8a11-fabf3df8c485" />
 
   
 * **Book Service (생성자 주입 및 핵심 로직 구현):**
