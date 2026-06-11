@@ -20,6 +20,9 @@ public class CommentService {
     // 전체 댓글 목록 조회
     @Transactional(readOnly = true)
     public List<Comment> getAll(Long bookId) {
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException(bookId);
+        }
         return commentRepository.findByBookIdOrderByCreatedAtDesc(bookId);
     }
 
