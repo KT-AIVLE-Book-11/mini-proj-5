@@ -357,84 +357,84 @@ Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인�
 
 ## 🛠️ 트러블슈팅 (Troubleshooting)
 ### 1. AI 표지 이미지 저장 오류
-* **[문제 상황]**
+**[문제 상황]**
 
-AI로 생성한 표지 이미지의 저장하기 버튼 클릭 시 "표지가 성공적으로 저장되었습니다!" 알림은 표시되나, 실제 도서 상세 페이지에서 표지 이미지가 반영되지 않는 문제 발생
+* AI로 생성한 표지 이미지의 저장하기 버튼 클릭 시 "표지가 성공적으로 저장되었습니다!" 알림은 표시되나, 실제 도서 상세 페이지에서 표지 이미지가 반영되지 않는 문제 발생
 
-* **[원인 분석]**
+**[원인 분석]**
 
-`Image.jsx`에서 표지 저장 요청 시 표지 수정이 아닌 도서 수정 엔드포인트로 요청을 전송하고 있었음.
+* `Image.jsx`에서 표지 저장 요청 시 표지 수정이 아닌 도서 수정 엔드포인트로 요청을 전송하고 있었음.
 
-해당 엔드포인트의 백엔드 로직에는 `coverImageUrl` 필드 처리가 포함되어 있지 않아 요청 데이터가 무시됨.
+* 해당 엔드포인트의 백엔드 로직에는 `coverImageUrl` 필드 처리가 포함되어 있지 않아 요청 데이터가 무시됨.
 
-* **[해결 방법]**
+**[해결 방법]**
 
-    * 표지 이미지 수정 엔드포인트로 요청 URL 변경
+  * 표지 이미지 수정 엔드포인트로 요청 URL 변경
 
     ```js
     // 수정 전
     const res = await fetch(`${API_URL}/${book.id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        coverImageUrl: generatedImage,
-        updatedAt: new Date().toISOString(),
-    }),
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+          coverImageUrl: generatedImage,
+          updatedAt: new Date().toISOString(),
+      }),
     })
     ```
     ```js
     // 수정 후
     const res = await fetch(`${API_URL}/${book.id}/cover`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        coverImageUrl: generatedImage,
-        prompt: prompt,
-    }),
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+          coverImageUrl: generatedImage,
+          prompt: prompt,
+      }),
     })
     ```
 ### 2. 조회수 중복 증가 오류
 
-* **[문제 상황]**
+**[문제 상황]**
 
-백엔드를 json-server에서 Spring Boot로 마이그레이션한 이후, 도서 상세 페이지에 한 번 진입했을 때 조회수가 1이 아니라 2씩 증가하는 현상 발생.
+* 백엔드를 json-server에서 Spring Boot로 마이그레이션한 이후, 도서 상세 페이지에 한 번 진입했을 때 조회수가 1이 아니라 2씩 증가하는 현상 발생.
 
-* **[원인 분석]**
+**[원인 분석]**
 
-React StrictMode가 개발 모드에서 `useEffect`를 의도적으로 두 번 실행하면서, 조회수 증가 요청(`PATCH /books/{id}/views`)이 두 번 호출됨. 기존 json-server 방식에서는 프론트가 `현재값 + 1`을 계산해 결과값을 덮어쓰는 구조로, 두 번 실행되어도 같은 값으로 덮어써져 `+1`로만 반영되었으나, Spring Boot 백엔드에서는 서버가 기존 값에 `+1`씩 누적하는 방식으로, 두 번 호출이 그대로 `+2` 로 누적되어 문제가 발생.
+* React StrictMode가 개발 모드에서 `useEffect`를 의도적으로 두 번 실행하면서, 조회수 증가 요청(`PATCH /books/{id}/views`)이 두 번 호출됨. 기존 json-server 방식에서는 프론트가 `현재값 + 1`을 계산해 결과값을 덮어쓰는 구조로, 두 번 실행되어도 같은 값으로 덮어써져 `+1`로만 반영되었으나, Spring Boot 백엔드에서는 서버가 기존 값에 `+1`씩 누적하는 방식으로, 두 번 호출이 그대로 `+2` 로 누적되어 문제가 발생.
 
-* **[해결 방법]**
+**[해결 방법]**
 
   * `useRef`로 실행 여부를 기록하는 플래그를 두어, `useEffect`가 두 번 실행되어도 조회수 요청이 한 번만 나가도록 가드 추가.
 
-  ```jsx
-  // 수정 전
-  useEffect(() => {
-    const fetchBookDetail = async () => {
-      ...
-      await fetch(`${API_URL}/${book.id}/views`, { method: 'PATCH' })
-      ...
-    }
-    if (book?.id) fetchBookDetail()
-  }, [book.id])
-  ```
+    ```jsx
+    // 수정 전
+    useEffect(() => {
+      const fetchBookDetail = async () => {
+        ...
+        await fetch(`${API_URL}/${book.id}/views`, { method: 'PATCH' })
+        ...
+      }
+      if (book?.id) fetchBookDetail()
+    }, [book.id])
+    ```
   
-  ```jsx
-  // 수정 후
-  const hasFetched = useRef(false)
+    ```jsx
+    // 수정 후
+    const hasFetched = useRef(false)
+    
+    useEffect(() => {
+      if (hasFetched.current) return   // 두 번째 실행이면 차단
+      hasFetched.current = true
   
-  useEffect(() => {
-    if (hasFetched.current) return   // 두 번째 실행이면 차단
-    hasFetched.current = true
-  
-    const fetchBookDetail = async () => {
-      ...
-      await fetch(`${API_URL}/${book.id}/views`, { method: 'PATCH' })
-      ...
-    }
-    if (book?.id) fetchBookDetail()
-  }, [book.id])
-  ```
+      const fetchBookDetail = async () => {
+        ...
+        await fetch(`${API_URL}/${book.id}/views`, { method: 'PATCH' })
+        ...
+      }
+      if (book?.id) fetchBookDetail()
+    }, [book.id])
+    ```
 
 
 ## 실행 가이드 :wrench:
