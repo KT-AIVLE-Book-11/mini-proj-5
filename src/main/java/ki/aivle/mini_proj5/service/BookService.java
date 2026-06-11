@@ -96,4 +96,31 @@ public class BookService {
         book.setLikes(book.getLikes() + 1);
         return book.getLikes();
     }
+    @Transactional(readOnly = true)
+    public List<Book> searchBooks(String searchType, String keyword, String genre) {
+        boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
+        boolean hasGenre = genre != null && !genre.trim().isEmpty();
+
+        if (!hasKeyword && !hasGenre) {
+            return bookRepository.findAll();
+        }
+
+        if (hasKeyword && hasGenre) {
+            if ("author".equals(searchType)) {
+                return bookRepository.findByAuthorContainingAndGenre(keyword, genre);
+            }
+            return bookRepository.findByTitleContainingAndGenre(keyword, genre);
+        }
+
+        if (hasKeyword) {
+            if ("author".equals(searchType)) {
+                return bookRepository.findByAuthorContaining(keyword);
+            }
+            return bookRepository.findByTitleContaining(keyword);
+        }
+
+        return bookRepository.findByGenre(genre);
+    }
+
+
 }
