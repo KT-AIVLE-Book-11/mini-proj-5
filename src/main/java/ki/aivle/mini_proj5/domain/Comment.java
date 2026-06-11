@@ -1,5 +1,6 @@
 package ki.aivle.mini_proj5.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
+    @JsonIgnore
     private Book book;
 
     @Column(nullable = false, length = 500)

@@ -20,7 +20,7 @@ public class CommentController {
     // 댓글 목록 조회
     @GetMapping("/{bookId}/comments")
     public ResponseEntity<List<Comment>> getAllComments(@PathVariable Long bookId) {
-        List<Comment> comments = commentService.getAll();
+        List<Comment> comments = commentService.getAll(bookId);
         return ResponseEntity.ok(comments);
     }
 
