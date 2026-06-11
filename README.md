@@ -194,6 +194,7 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
 
 
  <img alt="Image" src="https://github.com/user-attachments/assets/f949690b-c0c4-4279-b498-4f4789700a32" />
+ 
   * `Comment` Entity:
     * `@NotBlank`·`@Size`· `@Min(1)`·`@Max(5)`로 입력 및 별점 범위 검증 로직 적용
     * `@ManyToOne` + `@JoinColumn(name = "book_id")`로 `Book`과 단방향 연관관계 매핑 (도서 1 : 댓글 N)
