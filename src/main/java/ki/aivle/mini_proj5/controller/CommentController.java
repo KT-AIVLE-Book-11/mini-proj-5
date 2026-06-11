@@ -25,7 +25,7 @@ public class CommentController {
     }
 
     // 댓글 등록
-    @PostMapping
+    @PostMapping("/{bookId}/comments")
     public ResponseEntity<Comment> createComment(@Valid @RequestBody Comment comment) {
         Comment createdComment = commentService.create(comment);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
