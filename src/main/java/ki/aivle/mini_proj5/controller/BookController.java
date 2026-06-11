@@ -20,8 +20,12 @@ public class BookController {
 
     // 1. 전체 도서 목록 조회
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks() {
-        List<Book> books = bookService.getAll();
+    public ResponseEntity<List<Book>> getBooks(
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String genre
+    ) {
+        List<Book> books = bookService.searchBooks(searchType, keyword, genre);
         return ResponseEntity.ok(books);
     }
 
