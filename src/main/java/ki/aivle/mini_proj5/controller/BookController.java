@@ -18,10 +18,10 @@ public class BookController {
 
     private final BookService bookService;
 
-    // 1. 전체 도서 목록 조회
+    // 1. 전체 도서 목록 조회 + 필터링
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks() {
-        List<Book> books = bookService.getAll();
+    public ResponseEntity<List<Book>> getAllBooks(@RequestParam(required = false) String genre) {
+        List<Book> books = bookService.getAll(genre);
         return ResponseEntity.ok(books);
     }
 
