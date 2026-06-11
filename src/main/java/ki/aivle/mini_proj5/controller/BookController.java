@@ -18,16 +18,10 @@ public class BookController {
 
     private final BookService bookService;
 
-
-    // 1. 전체 도서 목록 조회 + 검색/장르 필터링
+    // 1. 전체 도서 목록 조회 + 필터링
     @GetMapping
-    public ResponseEntity<List<Book>> getBooks(
-            @RequestParam(required = false) String searchType,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String genre
-    ) {
-        List<Book> books = bookService.searchBooks(searchType, keyword, genre);
-
+    public ResponseEntity<List<Book>> getAllBooks(@RequestParam(required = false) String genre) {
+        List<Book> books = bookService.getAll(genre);
         return ResponseEntity.ok(books);
     }
 
@@ -56,6 +50,7 @@ public class BookController {
     @PatchMapping("/{id}/cover")
     public ResponseEntity<Book> updateBookCover(@PathVariable Long id, @RequestBody Map<String, String> request) {
         String coverImageUrl = request.get("coverImageUrl");
+        String prompt = request.get("prompt");
 
         Book updatedBook = bookService.updateCover(id, coverImageUrl);
         return ResponseEntity.ok(updatedBook);
