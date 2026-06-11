@@ -44,6 +44,16 @@
 | createdAt | timestamp | 생성일 | not null |
 | updatedAt | timestamp | 수정일 | not null |
 
+**[Comment]**
+
+| 컬럼명 | 타입 | 설명 | null 여부 |
+|---|---|---|---|
+| id | Long/Big Int | 댓글 아이디 | not null |
+| bookId | Long/Big Int | 도서 아이디 (FK) | not null |
+| content | text | 댓글 내용 | not null |
+| rating | int | 별점 (1~5) | not null |
+| createdAt | timestamp | 생성일 | not null |
+
 </div>
 
 ### 2. 프로젝트 핵심 골격
@@ -318,7 +328,7 @@ Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인�
 
 | 메서드 | 엔드포인트 | 기능 | 설명 |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/books` | 전체 도서 목록 조회 | DB에 등록된 모든 도서 데이터 조회 |
+| `GET` | `/books` | 전체 도서 목록 조회 / 검색 | 쿼리 파라미터로 검색 및 장르 필터링 지원. 파라미터 미전달 시 DB에 등록된 모든 도서 데이터 조회 |
 | `GET` | `/books/{id}` | 도서 상세 조회 | 특정 ID의 도서 세부 정보 조회 |
 | `POST` | `/books` | 신규 도서 등록 | 새 도서 등록 (생성일/수정일/조회수 등 자동 초기화) |
 | `PATCH` | `/books/{id}` | 도서 정보 수정 | 도서의 제목, 내용, 작가 등 세부 정보 업데이트 |
@@ -326,6 +336,8 @@ Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인�
 | `PATCH` | `/books/{id}/views` | 조회수 증가 | 도서 상세 페이지 진입 시 조회수 1 증가 |
 | `PATCH` | `/books/{id}/likes` | 좋아요 증가 | 좋아요 버튼 클릭 시 좋아요 수 1 증가 |
 | `DELETE`| `/books/{id}` | 도서 삭제 | 특정 ID의 도서 데이터를 DB에서 삭제 |
+| `GET` | `/books/{bookId}/comments` | 댓글 목록 조회 | 특정 도서의 전체 댓글 조회 |
+| `POST` | `/books/{bookId}/comments` | 댓글 등록 | 별점 및 댓글 내용 등록 |
 
 ---
 
@@ -338,6 +350,7 @@ Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인�
 | **RESULT** | **도서 표지 생성** | OpenAI API 기반 맞춤형 표지 자동 생성 및 DB 연동 저장 기능 제공 |
 | **LIST** | **독서 목록 리스트** | DB 데이터 기반 도서 카드 렌더링, 장르별 필터링, 검색창(제목/작가) 지원 |
 | **DETAIL** | **도서 상세 페이지** | 도서 상세 정보 조회, 내용/표지 개별 수정, 도서 삭제 및 조회수/좋아요 실시간 반영 |
+| **COMMENT** | **댓글** | 도서 상세 페이지 하단에서 별점 및 댓글 등록·조회·삭제, 등록된 댓글 수 실시간 표시 |
 | **공통** | **네비게이션/반응형** | 상단 고정 네비게이션 바 및 데스크톱/모바일 환경에 맞춘 UI 최적화 |
 
 ---
@@ -453,7 +466,10 @@ Frontend와 Backend 서버를 각각 독립적으로 실행.
 3. `src/main/java/ki/aivle/mini_proj5/MiniProj5Application.java` 파일 실행(Run)
 4. 콘솔 출력 확인
      
-     - **H2 콘솔 접속:** 브라우저에서 `http://localhost:8080/h2-console` 접속하여 DB 내부 확인 가능
+     - **H2 콘솔 접속:** 브라우저에서 `http://localhost:8080/h2-console` 접속
+       - JDBC URL: `jdbc:h2:mem:bookdb`
+       - User Name: `sa`
+       - Password: (공란)
 
 ### 2. Frontend 서버 실행 (React)
 1. Node.js 설치 확인 (https://nodejs.org)
