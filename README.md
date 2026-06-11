@@ -25,14 +25,16 @@
 
 ### 1. 기획 및 설계
 * **Frontend 분석 및 ERD 도출:** 프론트엔드의 `db.json` 구조를 분석하여 백엔드 `Book` Entity의 필수 필드(`id`, `title`, `author`, `content`, `genre`, `likes`, `views`, `isPublic`, `coverImageUrl`, `createdAt`, `updatedAt`) 도출 및 설계
+* **댓글 기능 확장 및 연관관계 설계:** 도서별 별점 및 댓글 기능을 위해 Comment Entity의 필드(id, book_id, content, rating, createdAt) 도출 및 설계 — Book Entity와 1:N 관계를 @ManyToOne 단방향 연관관계로 매핑하여 book_id(FK)가 Book의 id를 참조
 
 <div align="center">
+
 
 **[Book]**
 
 | 컬럼명 | 타입 | 설명 | null 여부 |
 |---|---|---|---|
-| id | Long/Big Int | 도서 아이디 | not null |
+| id | Long | 도서 아이디 | not null |
 | title | varchar | 도서 제목 | not null |
 | author | varchar | 작가 | not null |
 | content | text | 내용 | not null |
@@ -44,15 +46,17 @@
 | createdAt | timestamp | 생성일 | not null |
 | updatedAt | timestamp | 수정일 | not null |
 
+
 **[Comment]**
 
 | 컬럼명 | 타입 | 설명 | null 여부 |
-|---|---|---|---|
-| id | Long/Big Int | 댓글 아이디 | not null |
-| bookId | Long/Big Int | 도서 아이디 (FK) | not null |
+| --- | --- | --- | --- |
+| id | Long | 댓글 아이디 | not null |
+| book_id | Long | 도서 아이디(FK) | not null |
 | content | text | 댓글 내용 | not null |
-| rating | int | 별점 (1~5) | not null |
-| createdAt | timestamp | 생성일 | not null |
+| rating | int | 별점 | not null |
+| createdAt | timestamp | 작성일  | not null |
+
 
 </div>
 
@@ -185,12 +189,19 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
 ### 3. CRUD API 및 비즈니스 로직 구현 세부 내용(상세코드 GitHub에서 확인 - 일부 로직만 작성)
 
 * **Domain & Repository (검증 및 DB 연동):**
-  * `Book Entity`: `@NotBlank` 어노테이션 추가하여 필수 입력값(제목, 작가, 내용, 장르) 검증 로직 적용
+  * `Book` Entity: `@NotBlank` 어노테이션 추가하여 필수 입력값(제목, 작가, 내용, 장르) 검증 로직 적용
   * `BookRepository`: JpaRepository를 활용한 기본 CRUD 동작 검증 및 H2 콘솔을 통한 데이터 적재 확인
 
+
  <img alt="Image" src="https://github.com/user-attachments/assets/f949690b-c0c4-4279-b498-4f4789700a32" />
+  * `Comment` Entity:
+    * `@NotBlank`·`@Size`· `@Min(1)`·`@Max(5)`로 입력 및 별점 범위 검증 로직 적용
+    * `@ManyToOne` + `@JoinColumn(name = "book_id")`로 `Book`과 단방향 연관관계 매핑 (도서 1 : 댓글 N)
+   
+  <img alt="Image" alt="image" src="https://github.com/user-attachments/assets/4431cd51-33a9-4897-8a11-fabf3df8c485" />
+
   
-* **Service (생성자 주입 및 핵심 로직 구현):**
+* **Book Service (생성자 주입 및 핵심 로직 구현):**
   * `@RequiredArgsConstructor`를 활용하여 Repository 생성자 주입 적용
   * 상세 조회 시 `orElseThrow`로 커스텀 예외 처리 구현
   * 부분 수정(`updateInfo`): 전달된 데이터가 `null`이 아닐 때만 기존 엔티티 값을 변경하도록 구현하여 데이터 손실 방지
@@ -224,7 +235,36 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
   }
   ```
 
-* **Controller (엔드포인트 매핑 및 입력 검증):**
+* **Comment Service (생성자 주입 및 핵심 로직 구현):**
+    * `@RequiredArgsConstructor`를 활용하여 Repository 생성자 주입 적용
+    * `existsById`를 통해 도서 존재 확인 및 잘못된 접근 처리, `findByBookIdOrderByCreatedAtDesc`를 통해 생성일자 기준 내림차순 필터링 조회
+    * FK 위반 방지를 위해 `bookId` 로 `Book`entity 조회한 후 댓글 객체에 명확하게 매핑 및 저장
+    
+    ```java
+    @Service
+    @RequiredArgsConstructor
+    public class CommentService {
+        private final CommentRepository commentRepository;
+        private final BookRepository bookRepository;
+    
+        @Transactional(readOnly = true)
+        public List<Comment> getAll(Long bookId) {
+            if (!bookRepository.existsById(bookId)) {
+                throw new BookNotFoundException(bookId);
+            }
+            return commentRepository.findByBookIdOrderByCreatedAtDesc(bookId);
+        }
+    
+        @Transactional
+        public Comment create(Long bookId, Comment comment) {
+            Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
+            comment.setBook(book);
+            return commentRepository.save(comment);
+        }
+    }
+
+    
+* **Book Controller (엔드포인트 매핑 및 입력 검증):**
   * `GET`, `POST`, `PATCH`, `DELETE` 어노테이션을 활용한 표준 REST API 매핑
   * `@Valid` 및 `@RequestBody`를 적용하여 들어오는 객체 데이터 검증 후 등록
   ```java
@@ -256,7 +296,33 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
       }
   }
   ```
-
+  
+* **Comment Controller (엔드포인트 매핑 및 입력 검증):**
+  * `GET`, `POST` 어노테이션을 활용한 표준 REST API 매핑
+  * `@PathVariable` 로 댓글이 작성될 대상 도서의 ID를 식별하고, `@Valid` 및 `@RequestBody`를 적용하여 들어오는 객체 데이터 검증 후 등록
+  ```java
+    @RestController
+    @RequestMapping("/books")
+    @RequiredArgsConstructor
+    public class CommentController {
+    
+        private final CommentService commentService;
+        
+        @GetMapping("/{bookId}/comments")
+        public ResponseEntity<List<Comment>> getAllComments(@PathVariable Long bookId) {
+            List<Comment> comments = commentService.getAll(bookId);
+            return ResponseEntity.ok(comments);
+        }
+    
+        @PostMapping("/{bookId}/comments")
+        public ResponseEntity<Comment> createComment(@PathVariable Long bookId, @Valid @RequestBody Comment comment) {
+            Comment createdComment = commentService.create(bookId, comment);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
+        }
+    }
+    
+    ```
+  
 * **통합 연동 및 테스트:**
   * **Postman 검증:** 모든 엔드포인트 개별 호출 테스트 및 `@Valid` 예외 응답(400 Bad Request) 검증 완료
   * **Frontend 1차 연동:** React 코드 내 `fetch` URL을 기존 `3000`에서 `8080`으로 변경
