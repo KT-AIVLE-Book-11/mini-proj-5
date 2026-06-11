@@ -19,15 +19,15 @@ public class CommentController {
 
     // 댓글 목록 조회
     @GetMapping("/{bookId}/comments")
-    public ResponseEntity<List<Comment>> getAllComments() {
+    public ResponseEntity<List<Comment>> getAllComments(@PathVariable Long bookId) {
         List<Comment> comments = commentService.getAll();
         return ResponseEntity.ok(comments);
     }
 
     // 댓글 등록
     @PostMapping("/{bookId}/comments")
-    public ResponseEntity<Comment> createComment(@Valid @RequestBody Comment comment) {
-        Comment createdComment = commentService.create(comment);
+    public ResponseEntity<Comment> createComment(@PathVariable Long bookId, @Valid @RequestBody Comment comment) {
+        Comment createdComment = commentService.create(bookId, comment);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
     }
 }
