@@ -175,7 +175,7 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
     public class BookController {
         private final BookService bookService;
         
-        @GetMapping public ResponseEntity<List<Book>> getAllBooks() { ... }
+        @GetMapping public ResponseEntity<List<Book>> getAllBooks(@RequestParam(required = false) String searchType, @RequestParam(required = false) String keyword, @RequestParam(required = false) String genre, @RequestParam(required = false, defaultValue = "views") String sortBy, @RequestParam(required = false, defaultValue = "desc") String direction) { ... }
         @GetMapping("/{id}") public ResponseEntity<Book> getBook(@PathVariable Long id) { ... }
         @PostMapping public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) { ... }
         @PatchMapping("/{id}") public ResponseEntity<Book> updateBookInfo(...) { ... }
@@ -392,32 +392,32 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
 ## API 명세서 :electric_plug:
 Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인트
 
-| 메서드 | 엔드포인트 | 기능 | 설명 |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/books` | 전체 도서 목록 조회 / 검색 | 쿼리 파라미터로 검색 및 장르 필터링 지원. 파라미터 미전달 시 DB에 등록된 모든 도서 데이터 조회 |
-| `GET` | `/books/{id}` | 도서 상세 조회 | 특정 ID의 도서 세부 정보 조회 |
-| `POST` | `/books` | 신규 도서 등록 | 새 도서 등록 (생성일/수정일/조회수 등 자동 초기화) |
-| `PATCH` | `/books/{id}` | 도서 정보 수정 | 도서의 제목, 내용, 작가 등 세부 정보 업데이트 |
-| `PATCH` | `/books/{id}/cover` | AI 표지 업데이트 | OpenAI로 생성된 도서 표지 이미지 URL 저장 |
-| `PATCH` | `/books/{id}/views` | 조회수 증가 | 도서 상세 페이지 진입 시 조회수 1 증가 |
-| `PATCH` | `/books/{id}/likes` | 좋아요 증가 | 좋아요 버튼 클릭 시 좋아요 수 1 증가 |
-| `DELETE`| `/books/{id}` | 도서 삭제 | 특정 ID의 도서 데이터를 DB에서 삭제 |
-| `GET` | `/books/{bookId}/comments` | 댓글 목록 조회 | 특정 도서의 전체 댓글 조회 |
-| `POST` | `/books/{bookId}/comments` | 댓글 등록 | 별점 및 댓글 내용 등록 |
+| 메서드 | 엔드포인트 | 기능 | 설명                                                            |
+| :--- | :--- | :--- |:--------------------------------------------------------------|
+| `GET` | `/books` | 전체 도서 목록 조회 / 검색 | 쿼리 파라미터로 검색 및 장르 필터링,  정렬 지원. 파라미터 미전달 시 DB에 등록된 모든 도서 데이터 조회 |
+| `GET` | `/books/{id}` | 도서 상세 조회 | 특정 ID의 도서 세부 정보 조회                                            |
+| `POST` | `/books` | 신규 도서 등록 | 새 도서 등록 (생성일/수정일/조회수 등 자동 초기화)                                |
+| `PATCH` | `/books/{id}` | 도서 정보 수정 | 도서의 제목, 내용, 작가 등 세부 정보 업데이트                                   |
+| `PATCH` | `/books/{id}/cover` | AI 표지 업데이트 | OpenAI로 생성된 도서 표지 이미지 URL 저장                                  |
+| `PATCH` | `/books/{id}/views` | 조회수 증가 | 도서 상세 페이지 진입 시 조회수 1 증가                                       |
+| `PATCH` | `/books/{id}/likes` | 좋아요 증가 | 좋아요 버튼 클릭 시 좋아요 수 1 증가                                        |
+| `DELETE`| `/books/{id}` | 도서 삭제 | 특정 ID의 도서 데이터를 DB에서 삭제                                        |
+| `GET` | `/books/{bookId}/comments` | 댓글 목록 조회 | 특정 도서의 전체 댓글 조회                                               |
+| `POST` | `/books/{bookId}/comments` | 댓글 등록 | 별점 및 댓글 내용 등록                                                 |
 
 ---
 
 ## 주요 기능 :pencil:
 
-| 구분 | 기능 | 설명 |
-|------|------|------|
-| **MAIN** | **홈 화면 (랜딩 페이지)** | 서비스 소개, 주요 기능 안내 카드 및 스크롤 가능한 도서 캐러셀 슬라이더 제공 |
+| 구분 | 기능 | 설명                                                       |
+|------|------|----------------------------------------------------------|
+| **MAIN** | **홈 화면 (랜딩 페이지)** | 서비스 소개, 주요 기능 안내 카드 및 스크롤 가능한 도서 캐러셀 슬라이더 제공             |
 | **UPLOAD** | **신규 도서 업로드** | 제목, 작가, 장르, 세부 내용 입력 및 Spring Boot Validation을 통한 유효성 검사 |
-| **RESULT** | **도서 표지 생성** | OpenAI API 기반 맞춤형 표지 자동 생성 및 DB 연동 저장 기능 제공 |
-| **LIST** | **독서 목록 리스트** | DB 데이터 기반 도서 카드 렌더링, 장르별 필터링, 검색창(제목/작가) 지원 |
-| **DETAIL** | **도서 상세 페이지** | 도서 상세 정보 조회, 내용/표지 개별 수정, 도서 삭제 및 조회수/좋아요 실시간 반영 |
-| **COMMENT** | **댓글** | 도서 상세 페이지 하단에서 별점 및 댓글 등록·조회·삭제, 등록된 댓글 수 실시간 표시 |
-| **공통** | **네비게이션/반응형** | 상단 고정 네비게이션 바 및 데스크톱/모바일 환경에 맞춘 UI 최적화 |
+| **RESULT** | **도서 표지 생성** | OpenAI API 기반 맞춤형 표지 자동 생성 및 DB 연동 저장 기능 제공              |
+| **LIST** | **독서 목록 리스트** | DB 데이터 기반 도서 카드 렌더링, 장르별 필터링, 검색창(제목/작가), 정렬 지원          |
+| **DETAIL** | **도서 상세 페이지** | 도서 상세 정보 조회, 내용/표지 개별 수정, 도서 삭제 및 조회수/좋아요 실시간 반영         |
+| **COMMENT** | **댓글** | 도서 상세 페이지 하단에서 별점 및 댓글 등록·조회·삭제, 등록된 댓글 수 실시간 표시         |
+| **공통** | **네비게이션/반응형** | 상단 고정 네비게이션 바 및 데스크톱/모바일 환경에 맞춘 UI 최적화                   |
 
 ---
 
