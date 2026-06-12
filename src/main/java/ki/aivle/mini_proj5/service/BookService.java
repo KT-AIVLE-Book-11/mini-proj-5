@@ -5,8 +5,11 @@ import ki.aivle.mini_proj5.domain.Book;
 import ki.aivle.mini_proj5.exception.BookNotFoundException;
 import ki.aivle.mini_proj5.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import ki.aivle.mini_proj5.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
+
 
 import java.util.List;
 
@@ -14,29 +17,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
 
     // 전체 도서 목록 조회 + 검색 + 장르 필터링
     @Transactional(readOnly = true)
-    public List<Book> searchBooks(String searchType, String keyword, String genre) {
+    public List<Book> searchBooks(String searchType, String keyword, String genre, String sortBy, String direction) {
+
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
         boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
         boolean hasGenre = genre != null && !genre.trim().isEmpty() && !genre.equals("전체");
 
         if (hasKeyword && hasGenre) {
             if ("author".equals(searchType)) {
-                return bookRepository.findByAuthorContainingIgnoreCaseAndGenre(keyword, genre);
+                return bookRepository.findByAuthorContainingIgnoreCaseAndGenre(keyword, genre, sort);
             }
-            return bookRepository.findByTitleContainingIgnoreCaseAndGenre(keyword, genre);
+            return bookRepository.findByTitleContainingIgnoreCaseAndGenre(keyword, genre, sort);
         }
         if (hasKeyword) {
             if ("author".equals(searchType)) {
-                return bookRepository.findByAuthorContainingIgnoreCase(keyword);
+                return bookRepository.findByAuthorContainingIgnoreCase(keyword, sort);
             }
-            return bookRepository.findByTitleContainingIgnoreCase(keyword);
+            return bookRepository.findByTitleContainingIgnoreCase(keyword, sort);
         }
         if (hasGenre) {
-            return bookRepository.findByGenre(genre);
+            return bookRepository.findByGenre(genre, sort);
         }
-        return bookRepository.findAll();
+        return bookRepository.findAll(sort);
     }
 
     // 도서 상세 조회
@@ -90,6 +99,7 @@ public class BookService {
     @Transactional
     public void deleteBook(Long id) {
         if (bookRepository.existsById(id)) {
+            commentRepository.deleteByBookId(id);
             bookRepository.deleteById(id);
         } else {
             throw new BookNotFoundException(id);
