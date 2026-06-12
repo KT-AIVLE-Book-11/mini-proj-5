@@ -232,8 +232,13 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
       private final BookService bookService;
       
       @GetMapping
-      public ResponseEntity<List<Book>> getAllBooks() {
-          return ResponseEntity.ok(bookService.getAll());
+      public ResponseEntity<List<Book>> getAllBooks(
+              @RequestParam(required = false) String searchType,
+              @RequestParam(required = false) String keyword,
+              @RequestParam(required = false) String genre,
+              @RequestParam(required = false, defaultValue = "views") String sortBy,
+              @RequestParam(required = false, defaultValue = "desc") String direction) {
+          return ResponseEntity.ok(bookService.searchBooks(searchType, keyword, genre, sortBy, direction));
       }
 
       @GetMapping("/{id}")
