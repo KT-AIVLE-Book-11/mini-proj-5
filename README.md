@@ -338,6 +338,9 @@ Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인�
 | `PATCH` | `/books/{id}/views` | 조회수 증가 | 도서 상세 페이지 진입 시 조회수 1 증가 |
 | `PATCH` | `/books/{id}/likes` | 좋아요 증가 | 좋아요 버튼 클릭 시 좋아요 수 1 증가 |
 | `DELETE`| `/books/{id}` | 도서 삭제 | 특정 ID의 도서 데이터를 DB에서 삭제 |
+| `GET` | `/books/{bookId}/comments` | 댓글 목록 조회 | 특정 도서의 전체 댓글 조회 |
+| `POST` | `/books/{bookId}/comments` | 댓글 등록 | 별점 및 댓글 내용 등록 |
+
 
 ---
 
@@ -350,6 +353,7 @@ Spring Boot 백엔드 서버(`localhost:8080`) 제공 RESTful API 엔드포인�
 | **RESULT** | **도서 표지 생성** | OpenAI API 기반 맞춤형 표지 자동 생성 및 DB 연동 저장 기능 제공 |
 | **LIST** | **독서 목록 리스트** | DB 데이터 기반 도서 카드 렌더링, 장르별 필터링, 검색창(제목/작가) 지원 |
 | **DETAIL** | **도서 상세 페이지** | 도서 상세 정보 조회, 내용/표지 개별 수정, 도서 삭제 및 조회수/좋아요 실시간 반영 |
+| **COMMENT** | **댓글** | 도서 상세 페이지 하단에서 별점 및 댓글 등록·조회, 등록된 댓글 수 실시간 표시 |
 | **공통** | **네비게이션/반응형** | 상단 고정 네비게이션 바 및 데스크톱/모바일 환경에 맞춘 UI 최적화 |
 
 ---
@@ -386,23 +390,23 @@ AI로 생성한 표지 이미지의 저장하기 버튼 클릭 시 "표지가 �
     ```js
     // 수정 전
     const res = await fetch(`${API_URL}/${book.id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        coverImageUrl: generatedImage,
-        updatedAt: new Date().toISOString(),
-    }),
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+          coverImageUrl: generatedImage,
+          updatedAt: new Date().toISOString(),
+      }),
     })
     ```
     ```js
     // 수정 후
     const res = await fetch(`${API_URL}/${book.id}/cover`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        coverImageUrl: generatedImage,
-        prompt: prompt,
-    }),
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+          coverImageUrl: generatedImage,
+          prompt: prompt,
+      }),
     })
     ```
 
