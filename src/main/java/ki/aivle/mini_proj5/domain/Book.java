@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import java.time.LocalDateTime;
 
@@ -56,6 +57,9 @@ public class Book {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @Formula("(SELECT COUNT(*) FROM comment c WHERE c.book_id = id)")
+    private Integer commentCount;
 
     // 최초 저장(INSERT) 전 자동 호출 -> 생성일/수정일 초기화
     @PrePersist

@@ -5,8 +5,11 @@ import ki.aivle.mini_proj5.domain.Book;
 import ki.aivle.mini_proj5.exception.BookNotFoundException;
 import ki.aivle.mini_proj5.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import ki.aivle.mini_proj5.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
+
 
 import java.util.List;
 
@@ -14,11 +17,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
 
-    // 전체 도서 목록 조회
+    // 전체 도서 목록 조회 + 검색 + 장르 필터링
     @Transactional(readOnly = true)
-    public List<Book> getAll() {
-        return bookRepository.findAll();
+    public List<Book> searchBooks(String searchType, String keyword, String genre, String sortBy, String direction) {
+
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
+        boolean hasGenre = genre != null && !genre.trim().isEmpty() && !genre.equals("전체");
+
+        if (hasKeyword && hasGenre) {
+            if ("author".equals(searchType)) {
+                return bookRepository.findByAuthorContainingIgnoreCaseAndGenre(keyword, genre, sort);
+            }
+            return bookRepository.findByTitleContainingIgnoreCaseAndGenre(keyword, genre, sort);
+        }
+        if (hasKeyword) {
+            if ("author".equals(searchType)) {
+                return bookRepository.findByAuthorContainingIgnoreCase(keyword, sort);
+            }
+            return bookRepository.findByTitleContainingIgnoreCase(keyword, sort);
+        }
+        if (hasGenre) {
+            return bookRepository.findByGenre(genre, sort);
+        }
+        return bookRepository.findAll(sort);
     }
 
     // 도서 상세 조회
@@ -72,42 +99,13 @@ public class BookService {
     @Transactional
     public void deleteBook(Long id) {
         if (bookRepository.existsById(id)) {
+            commentRepository.deleteByBookId(id);
             bookRepository.deleteById(id);
         } else {
             throw new BookNotFoundException(id);
         }
     }
 
-    // 조회수 증가
-    @Transactional
-    public void incrementViews(Long id) {
-        Book book = getById(id);
-        book.setViews(book.getViews() + 1);
-    }
-
-    // 좋아요 증가
-    @Transactional
-    public void incrementLikes(Long id) {
-        Book book = getById(id);
-        book.setLikes(book.getLikes() + 1);
-    }
-  
-    /*
-    // 프론트 엔드 처리
-    // 조회수 증가
-    @Transactional
-    public void incrementViews(Long id, int views) {
-        Book book = getById(id);
-        book.setViews(views);
-    }
-
-    // 좋아요 증가
-    @Transactional
-    public void incrementLikes(Long id, int likes) {
-        Book book = getById(id);
-        book.setLikes(likes);
-    }
-    // 백엔드 처리
     // 조회수 증가
     @Transactional
     public int incrementViews(Long id) {
@@ -123,6 +121,4 @@ public class BookService {
         book.setLikes(book.getLikes() + 1);
         return book.getLikes();
     }
-    */
-
 }

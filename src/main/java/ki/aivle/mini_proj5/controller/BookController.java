@@ -12,16 +12,22 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/books")
+@RequestMapping("/books")
 @RequiredArgsConstructor
 public class BookController {
 
     private final BookService bookService;
 
-    // 1. 전체 도서 목록 조회
+    // 1. 전체 도서 목록 조회 + 검색 + 필터링
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks() {
-        List<Book> books = bookService.getAll();
+    public ResponseEntity<List<Book>> getAllBooks(
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false, defaultValue = "views") String sortBy,
+            @RequestParam(required = false, defaultValue = "desc") String direction
+    ){
+        List<Book> books = bookService.searchBooks(searchType, keyword, genre, sortBy, direction);
         return ResponseEntity.ok(books);
     }
 
@@ -52,7 +58,7 @@ public class BookController {
         String coverImageUrl = request.get("coverImageUrl");
         String prompt = request.get("prompt");
 
-        Book updatedBook = bookService.updateCover(id, coverImageUrl, prompt);
+        Book updatedBook = bookService.updateCover(id, coverImageUrl);
         return ResponseEntity.ok(updatedBook);
     }
 
@@ -65,15 +71,15 @@ public class BookController {
 
     // 7. 조회수 증가
     @PatchMapping("/{id}/views")
-    public ResponseEntity<Void> incrementViews(@PathVariable Long id) {
-        bookService.incrementViews(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Integer> incrementViews(@PathVariable Long id) {
+        int updatedViews = bookService.incrementViews(id);
+        return ResponseEntity.ok(updatedViews);
     }
 
     // 8. 좋아요 증가
     @PatchMapping("/{id}/likes")
-    public ResponseEntity<Void> incrementLikes(@PathVariable Long id) {
-        bookService.incrementLikes(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Integer> incrementLikes(@PathVariable Long id) {
+        int updatedLikes = bookService.incrementLikes(id);
+        return ResponseEntity.ok(updatedLikes);
     }
 }
