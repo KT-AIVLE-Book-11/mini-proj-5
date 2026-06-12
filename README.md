@@ -151,8 +151,8 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
       private final BookRepository bookRepository;
       
       @Transactional(readOnly = true)
-      public List<Book> getAll() { return bookRepository.findAll(); }
-      // 비즈니스 로직 메서드 골격 정의
+      public List<Book> searchBooks(String searchType, String keyword, String genre, String sortBy, String direction) {
+          // 검색/필터/정렬 통합 처리
   }
   ```
 
@@ -199,9 +199,6 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
   @RequiredArgsConstructor
   public class BookService {
       private final BookRepository bookRepository;
-      
-      @Transactional(readOnly = true)
-      public List<Book> getAll() { return bookRepository.findAll(); }
     
       @Transactional(readOnly = true)
       public Book getById(Long id) {
