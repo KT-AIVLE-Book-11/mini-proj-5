@@ -132,9 +132,14 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
 * **Repository (BookRepository.java):** `JpaRepository` 상속을 통한 DB 접근 인터페이스 구성
   ```java
   public interface BookRepository extends JpaRepository<Book, Long> {
-      List<Book> findByTitleContaining(String keyword);
-      List<Book> findByAuthorContaining(String keyword);
-      List<Book> findByGenre(String genre);
+      // 키워드 검색 (대소문자 무시)
+      List<Book> findByTitleContainingIgnoreCase(String keyword, Sort sort);
+      List<Book> findByAuthorContainingIgnoreCase(String keyword, Sort sort);
+      // 장르 필터링
+      List<Book> findByGenre(String genre, Sort sort);
+      // 키워드 + 장르 복합 검색
+      List<Book> findByTitleContainingIgnoreCaseAndGenre(String keyword, String genre, Sort sort);
+      List<Book> findByAuthorContainingIgnoreCaseAndGenre(String keyword, String genre, Sort sort);
   }
   ```
 
