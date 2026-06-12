@@ -294,7 +294,7 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
   ```java
   // 백엔드: 표지 업데이트 서비스 (BookService.java)
   @Transactional
-  public Book updateCover(Long id, String coverImageUrl, String prompt) {
+  public Book updateCover(Long id, String coverImageUrl) {
       Book existing = getById(id);
       existing.setCoverImageUrl(coverImageUrl);
       return bookRepository.save(existing);
