@@ -167,8 +167,8 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
         @PatchMapping("/{id}") public ResponseEntity<Book> updateBookInfo(...) { ... }
         @PatchMapping("/{id}/cover") public ResponseEntity<Book> updateBookCover(...) { ... }
         @DeleteMapping("/{id}") public ResponseEntity<Void> deleteBook(@PathVariable Long id) { ... }
-        @PatchMapping("/{id}/views") public ResponseEntity<Void> incrementViews(@PathVariable Long id) { ... }
-        @PatchMapping("/{id}/likes") public ResponseEntity<Void> incrementLikes(@PathVariable Long id) { ... }
+        @PatchMapping("/{id}/views") public ResponseEntity<Integer> incrementViews(@PathVariable Long id) { ... }
+        @PatchMapping("/{id}/likes") public ResponseEntity<Integer> incrementLikes(@PathVariable Long id) { ... }
     }
     ```
 
