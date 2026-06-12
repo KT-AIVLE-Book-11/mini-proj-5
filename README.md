@@ -166,7 +166,12 @@ Spring MVC 패턴에 따라 데이터 처리 및 비즈니스 로직을 분리�
     public class BookController {
         private final BookService bookService;
         
-        @GetMapping public ResponseEntity<List<Book>> getAllBooks() { ... }
+        @GetMapping public ResponseEntity<List<Book>> getAllBooks(
+          @RequestParam(required = false) String searchType,
+          @RequestParam(required = false) String keyword,
+          @RequestParam(required = false) String genre,
+          @RequestParam(required = false, defaultValue = "views") String sortBy,
+          @RequestParam(required = false, defaultValue = "desc") String direction) { ... }
         @GetMapping("/{id}") public ResponseEntity<Book> getBook(@PathVariable Long id) { ... }
         @PostMapping public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) { ... }
         @PatchMapping("/{id}") public ResponseEntity<Book> updateBookInfo(...) { ... }
