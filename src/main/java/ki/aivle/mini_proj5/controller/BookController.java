@@ -23,8 +23,11 @@ public class BookController {
     public ResponseEntity<List<Book>> getAllBooks(
             @RequestParam(required = false) String searchType,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String genre) {
-        List<Book> books = bookService.searchBooks(searchType, keyword, genre);
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false, defaultValue = "views") String sortBy,
+            @RequestParam(required = false, defaultValue = "desc") String direction
+    ){
+        List<Book> books = bookService.searchBooks(searchType, keyword, genre, sortBy, direction);
         return ResponseEntity.ok(books);
     }
 
